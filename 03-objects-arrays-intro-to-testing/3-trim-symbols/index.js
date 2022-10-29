@@ -6,18 +6,15 @@
  */
 export function trimSymbols(string, size) {
   if (size === undefined) { return string;}
-  let tempStr = '';
+  let tempStr = string.length > 0 ? string[0] : '';
   let tempArrOfIndex = [];
-  let index = 0;
+  let index = string.length > 0 ? 1 : 0;
   let stringArr = [...string];
   let result = [];
   // в данном цикле получаем массив длинн
   // строка 'aaabbaa'  => [3,2,2]
-  for (let i = 0; i < stringArr.length; i++) {
-    if (tempStr === '') {
-      tempStr = stringArr[i];
-      index++;
-    } else if (tempStr === stringArr[i]) {
+  for (let i = 1; i < stringArr.length; i++) {
+    if (tempStr === stringArr[i]) {
       index++;
     } else {
       tempArrOfIndex.push(index);
