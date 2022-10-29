@@ -21,10 +21,9 @@ export function trimSymbols(string, size) {
       index = 1;
       tempStr = stringArr[i];
     }
-    if (i === stringArr.length - 1) {
-      tempArrOfIndex.push(index);
-    }
   }
+  // эта строчка закидывает последний index в массив
+  tempArrOfIndex.push(index);
   // тут зная длинну для каждой буквы - режем массив исходных символов на куски
   for (let len of tempArrOfIndex) {
     let removed = stringArr.splice(0, len);
