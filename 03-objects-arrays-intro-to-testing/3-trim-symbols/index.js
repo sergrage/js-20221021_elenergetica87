@@ -6,34 +6,26 @@
  */
 export function trimSymbols(string, size) {
   if (size === undefined) { return string;}
-
-  let char = string.length > 0 ? string[0] : ''; // сюда записываем символ. если есть, уже записываем первый.
-  let arrOfCharLengths = [];// сюда складываем число символов идущих подряд
-  let numberOfChar = string.length > 0 ? 1 : 0; //  число символов идущих подряд. если есть первйы символ, уже записываем 1.
-  let result = [];
-
-  let stringArr = [...string];
-  // в данном цикле получаем массив длинн
-  // строка "aaabbaa"  => [3,2,2]
-  for (let i = 1; i < stringArr.length; i++) {
-    if (char === stringArr[i]) {
-      numberOfChar++;
+  if (string === '') { return '';}
+  const arrOfChar = [];
+  let char = string[0];
+  let stringPath = string[0];
+  for (let i = 1; i < string.length; i++) {
+    if (string[i] === char) {
+      stringPath = stringPath + char;
     } else {
-      arrOfCharLengths.push(numberOfChar);
-      numberOfChar = 1;
-      char = stringArr[i];
+      arrOfChar.push(stringPath);
+      char = string[i];
+      stringPath = string[i];
     }
   }
-  // эта строчка закидывает последний numberOfChar в массив
-  arrOfCharLengths.push(numberOfChar);
+  arrOfChar.push(stringPath);
 
-  // тут зная длинну для каждой буквы - режем массив исходных символов на куски
-  for (let len of arrOfCharLengths) {
-    let removed = stringArr.splice(0, len);
-    if (removed.length > size) {
-      removed = removed.splice(0, size);
-    }
-    result = result.concat(removed);
+  let part = [];
+  let result = '';
+  for (let str of arrOfChar) {
+    part = str.length > size ? str.substr(0, size) : str;
+    result = result + part;
   }
-  return result.join('');
+  return result;
 }
