@@ -1,10 +1,16 @@
 export default class ColumnChart {
+  // было бы неплохо для init задать значение по умолчанию
+  // ну а более удачным именем будет "options", "props", "params" итд.
   constructor(init) {
+    // почему используется "??" оператор а не "||"?
     this.data = init.data ? this.graphLineToPercent(init.data) : [];
-    this.label = init.label ? init.label : '';
+    // а если мы не передадим в ColumnChart параметр при вызове new ColumnChart()
+    // будет падать ошибка, так как init будет равен `undefined`
+    this.label = init.label ? init.label : ''; 
     this.value = init.value ? init.value : '';
     this.link = init['link'] ? init['link'] : '';
 
+    // 
     this.formatHeading = init.formatHeading;
 
     console.log(this.formatHeading);
@@ -17,11 +23,19 @@ export default class ColumnChart {
   // }
   render() {
     this.element.classList.add('column-chart');
+    
     if (this.data.length === 0) {
       this.element.classList.add('column-chart_loading');
     }
+    
     this.element.setAttribute('style', `--chart-height: 50`);
 
+    // тут объявление должно быть через `const`
+    
+    // все эти элементы нужно собрать через шаблонную строку,
+    // а не через метод "createElement"
+    // "createElement" следует использовать только для для создания эл-та на к-м вызовем метод `innerHTML`
+    
     let title = document.createElement('div');
     let link = document.createElement('a');
     let chartContainer = document.createElement('div');
@@ -33,9 +47,11 @@ export default class ColumnChart {
     link.classList.add('column-chart__link');
     link.setAttribute('href', this.link);
     link.innerText = 'View all';
+    
     if (this.link.length > 0) {
       title.append(link);
     }
+    
     this.element.append(title);
 
     chartHeader.classList.add('column-chart__header');
@@ -49,9 +65,12 @@ export default class ColumnChart {
   }
 
   createGraph() {
+    // const graph
     let graph = document.createElement('div');
     graph.classList.add('column-chart__chart');
     graph.setAttribute('data-element', 'body');
+    
+    // const h
     for (let h of this.data) {
       let div = document.createElement('div');
       div.setAttribute('style', `--value: ${h.value}`);
@@ -63,6 +82,7 @@ export default class ColumnChart {
 
   graphLineToPercent(data) {
     const maxValue = Math.max(...data);
+    // что такое 50?
     const scale = 50 / maxValue;
     return data.map(item => {
       return {
