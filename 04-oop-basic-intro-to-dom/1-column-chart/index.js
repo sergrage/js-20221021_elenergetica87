@@ -1,12 +1,6 @@
 export default class ColumnChart {
   constructor(props) {
     if (props === undefined) {
-      props = {
-        data: [],
-        label: '',
-        link: '',
-        value: 0
-      };
       this.chartClasses = 'column-chart column-chart_loading';
     } else {
       this.chartClasses = 'column-chart';
@@ -14,23 +8,17 @@ export default class ColumnChart {
 
     this.chartHeight = 50;
 
-    this.data = props.data || [];
+    this.data = (props && props.data) || [];
     if (this.data.length) {
       this.data = this.graphLineToPercent(props.data);
     }
-    // this.data = this.graphLineToPercent(props.data) || [];
-    this.label = props.label || '';
-
-    this.value = props.formatHeading ? props.formatHeading(props.value) : props.value;
-
-    this.link = this.getLink(props['link']);
-
-
-
+    this.label = (props && props.label) || '';
+    //немного ниндзя кода))))
+    this.value = (props && props.value) ? (props.formatHeading ? props.formatHeading(props.value) : props.value) : 0;
+    this.link = (props && props.link) ? `<a class="column-chart__link" href="${props.link}">View all</a>` : '';
     this.graph = '';
     this.createGraph();
-
-    this.formatHeading = props.formatHeading;
+    // this.formatHeading = props.formatHeading;
     this.render();
     this.initEventListeners();
   }
@@ -75,10 +63,10 @@ export default class ColumnChart {
 
   createGraph() {
     let graphTemp = '';
-    for (const h of this.data) {
+    this.data.map(d => {
       graphTemp = graphTemp +
-      `<div style="--value:  ${h.value}" data-tooltip="${h.percent}"></div>`;
-    }
+        `<div style="--value:  ${d.value}" data-tooltip="${d.percent}"></div>`;
+    });
     this.graph = graphTemp;
   }
 
