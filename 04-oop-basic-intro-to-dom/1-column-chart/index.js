@@ -8,6 +8,8 @@ export default class ColumnChart {
         value: 0
       };
       this.chartClasses = 'column-chart column-chart_loading';
+    } else {
+      this.chartClasses = 'column-chart';
     }
 
     this.chartHeight = 50;
@@ -23,7 +25,7 @@ export default class ColumnChart {
 
     this.link = this.getLink(props['link']);
 
-    this.chartClasses = 'column-chart';
+
 
     this.graph = '';
     this.createGraph();
