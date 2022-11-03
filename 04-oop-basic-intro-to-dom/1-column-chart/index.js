@@ -1,5 +1,14 @@
 export default class ColumnChart {
   constructor(props) {
+    if (props === undefined) {
+      props = {
+        data: [],
+        label: '',
+        link: '',
+        value: 0
+      };
+    }
+
     this.chartHeight = 50;
 
     this.data = this.graphLineToPercent(props.data) || [];
