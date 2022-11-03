@@ -7,16 +7,23 @@ export default class ColumnChart {
         link: '',
         value: 0
       };
+      this.chartClasses = 'column-chart column-chart_loading';
     }
 
     this.chartHeight = 50;
 
-    this.data = this.graphLineToPercent(props.data) || [];
+    this.data = props.data || [];
+    if (this.data.length) {
+      this.data = this.graphLineToPercent(props.data);
+    }
+    // this.data = this.graphLineToPercent(props.data) || [];
     this.label = props.label || '';
+
     this.value = props.formatHeading ? props.formatHeading(props.value) : props.value;
+
     this.link = this.getLink(props['link']);
 
-    this.chartClasses = this.data.length ? 'column-chart' : 'column-chart column-chart_loading';
+    this.chartClasses = 'column-chart';
 
     this.graph = '';
     this.createGraph();
