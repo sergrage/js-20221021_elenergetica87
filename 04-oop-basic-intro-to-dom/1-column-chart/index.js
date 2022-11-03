@@ -1,24 +1,17 @@
 export default class ColumnChart {
   constructor(props) {
-    if (props === undefined) {
-      this.chartClasses = 'column-chart column-chart_loading';
-    } else {
-      this.chartClasses = 'column-chart';
-    }
-
+    this.chartClasses = (props === undefined) ? 'column-chart column-chart_loading' : 'column-chart';
     this.chartHeight = 50;
 
-    this.data = (props && props.data) || [];
-    if (this.data.length) {
-      this.data = this.graphLineToPercent(props.data);
-    }
+    this.data = (props && props.data) ? this.graphLineToPercent(props.data) : [];
     this.label = (props && props.label) || '';
     //немного ниндзя кода))))
     this.value = (props && props.value) ? (props.formatHeading ? props.formatHeading(props.value) : props.value) : 0;
     this.link = (props && props.link) ? `<a class="column-chart__link" href="${props.link}">View all</a>` : '';
+
     this.graph = '';
     this.createGraph();
-    // this.formatHeading = props.formatHeading;
+
     this.render();
     this.initEventListeners();
   }
@@ -28,7 +21,6 @@ export default class ColumnChart {
     <div class="${this.chartClasses}" style="--chart-height: 50">
       <div class="column-chart__title">
         Total ${this.label} ${this.link}
-
       </div>
       <div class="column-chart__container">
         <div data-element="header" class="column-chart__header">${this.value}</div>
@@ -42,9 +34,7 @@ export default class ColumnChart {
 
   render() {
     const element = document.createElement("div"); // (*)
-
     element.innerHTML = this.getTemplate();
-
     // NOTE: в этой строке мы избавляемся от обертки-пустышки в виде `div`
     // который мы создали на строке (*)
     this.element = element.firstElementChild;
@@ -62,16 +52,9 @@ export default class ColumnChart {
   }
 
   createGraph() {
-    let graphTemp = '';
-    this.data.map(d => {
-      graphTemp = graphTemp +
-        `<div style="--value:  ${d.value}" data-tooltip="${d.percent}"></div>`;
+    this.data.map(col => {
+      this.graph += `<div style="--value:  ${col.value}" data-tooltip="${col.percent}"></div>`;
     });
-    this.graph = graphTemp;
-  }
-
-  getLink(link) {
-    return link ? `<a class="column-chart__link" href="${link}">View all</a>` : '';
   }
 
   initEventListeners() {
