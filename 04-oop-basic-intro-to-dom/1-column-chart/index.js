@@ -75,7 +75,7 @@ export default class ColumnChart {
 
   createGraph() {
     let graphTemp = '';
-    for (let h of this.data) {
+    for (const h of this.data) {
       graphTemp = graphTemp +
       `<div style="--value:  ${h.value}" data-tooltip="${h.percent}"></div>`;
     }
@@ -99,8 +99,8 @@ export default class ColumnChart {
     // NOTE: удаляем обработчики событий, если они есть
   }
 
-  update(props) {
-    self.prototype.constructor(props);
+  update(data) {
+    this.data = data;
   }
 
 }
