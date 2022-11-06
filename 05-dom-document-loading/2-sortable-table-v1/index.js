@@ -57,17 +57,22 @@ export default class SortableTable {
     }).join('');
   }
   getBodyTemplate() {
+    const ids = this.headerConfig.map(x => x.id);
     // <img className="sortable-table-image" alt="Image" src="${item?.images[0]?.url || 'https://via.placeholder.com/32'}">
     return this.data.map(item => {
+      let cell = ids.map(x => {
+        if (item[x].template) {
+          return item[x].template(item[x]);
+        } else {
+          return `<div class="sortable-table__cell">${item[x]}</div>`;
+        }
+      }).join('');
+
+      console.log('cell', cell);
+
       return `
       <a href="/products/${item.id}" class="sortable-table__row">
-        <div class="sortable-table__cell">
-          <img class="sortable-table-image" alt="Image" src="https://via.placeholder.com/32">
-        </div>
-        <div class="sortable-table__cell">${item.title}</div>
-        <div class="sortable-table__cell">${item.quantity}</div>
-        <div class="sortable-table__cell">${item.price}</div>
-        <div class="sortable-table__cell">${item.sales}</div>
+        ${cell}
       </a>
     `;
     }).join('');
