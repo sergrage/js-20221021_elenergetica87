@@ -26,7 +26,6 @@ export default class NotificationMessage {
     element.innerHTML = this.getTemplate();
     this.element = element.firstElementChild;
   }
-
   show(element) {
     if (element) {
       element.innerHTML = this.getTemplate();
@@ -38,15 +37,12 @@ export default class NotificationMessage {
       this.remove();
     }, this.duration);
   }
-
   initEventListeners() {
     // NOTE: в данном методе добавляем обработчики событий, если они есть
   }
-
   remove() {
     this.element.remove();
   }
-
   destroy() {
     this.remove();
     // NOTE: удаляем обработчики событий, если они есть

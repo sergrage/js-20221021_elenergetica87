@@ -58,27 +58,21 @@ export default class SortableTable {
   }
   getBodyTemplate() {
     const ids = this.headerConfig.map(x => x.id);
-    // <img className="sortable-table-image" alt="Image" src="${item?.images[0]?.url || 'https://via.placeholder.com/32'}">
     return this.data.map(item => {
-      let cell = ids.map(x => {
-        if (item[x].template) {
-          return item[x].template(item[x]);
+      let cell = ids.map(id => {
+        let headerItem = this.headerConfig.find(x => x.id === id);
+        if (headerItem.hasOwnProperty('template') && item[id]) {
+          return headerItem.template(item[id]);
         } else {
-          return `<div class="sortable-table__cell">${item[x]}</div>`;
+          return `<div class="sortable-table__cell">${item[id]}</div>`;
         }
       }).join('');
-
-      console.log('cell', cell);
-
       return `
       <a href="/products/${item.id}" class="sortable-table__row">
         ${cell}
       </a>
     `;
     }).join('');
-  }
-  applyTemplate(record, key){
-
   }
 
   initEventListeners() {
