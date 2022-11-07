@@ -1,8 +1,8 @@
 export default class NotificationMessage {
-  constructor(text, props) {
-    this.text = text || 'hi';
-    this.duration = (props && props.duration) || 1000;
-    this.type = (props && props.type) || 'success';
+  constructor(text = '', {duration = 1000, type = 'success'} = {}) {
+    this.text = text;
+    this.duration = duration;
+    this.type = type;
     this.element = document.createElement("div");
     this.render();
     this.initEventListeners();
@@ -22,17 +22,16 @@ export default class NotificationMessage {
     `;
   }
   render() {
+    const oldNotification = document.querySelector('.notification');
+    if (oldNotification) {
+      oldNotification.remove();
+    }
     const element = document.createElement("div"); // (*)
     element.innerHTML = this.getTemplate();
     this.element = element.firstElementChild;
   }
-  show(element) {
-    if (element) {
-      element.innerHTML = this.getTemplate();
-    } else {
-      element = this.element;
-    }
-    document.body.append(element);
+  show(element = document.body) {
+    element.append(this.element);
     setTimeout(() => {
       this.remove();
     }, this.duration);

@@ -47,7 +47,7 @@ export default class SortableTable {
           <span class="sort-arrow"></span>
         </span>
       `;
-      let arrow = item.sortable ? arrowTemplate : '';
+      const arrow = item.sortable ? arrowTemplate : '';
       return `
         <div class="sortable-table__cell" data-id="${item.id}" data-sortable="${item.sortable}">
             <span>${item.title}</span>
@@ -59,8 +59,8 @@ export default class SortableTable {
   getBodyTemplate() {
     const ids = this.headerConfig.map(x => x.id);
     return this.data.map(item => {
-      let cell = ids.map(id => {
-        let headerItem = this.headerConfig.find(x => x.id === id);
+      const tableCells = ids.map(id => {
+        const headerItem = this.headerConfig.find(x => x.id === id);
         if (headerItem.hasOwnProperty('template') && item[id]) {
           return headerItem.template(item[id]);
         } else {
@@ -69,7 +69,7 @@ export default class SortableTable {
       }).join('');
       return `
       <a href="/products/${item.id}" class="sortable-table__row">
-        ${cell}
+        ${tableCells}
       </a>
     `;
     }).join('');
