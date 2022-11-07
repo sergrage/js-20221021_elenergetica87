@@ -1,17 +1,10 @@
 export default class SortableTable {
   constructor(headerConfig = [], data = []) {
     this.headerConfig = headerConfig;
-
-    // this.hasTemplates = Object.fromEntries(
-    //   this.headerConfig.filter(item => item.template).map(({id, template}) => [id, template])
-    // );
-
     this.data = data;
-
     this.render();
     this.initEventListeners();
   }
-
   getTemplate() {
     return `
       <div data-element="productsContainer" class="products-list__container">
@@ -33,13 +26,11 @@ export default class SortableTable {
       </div>
     `;
   }
-
   render() {
     const element = document.createElement("div");
     element.innerHTML = this.getTemplate();
     this.element = element.firstElementChild;
   }
-
   getHeaderTemplate() {
     return this.headerConfig.map(item => {
       const arrowTemplate = `
@@ -75,8 +66,7 @@ export default class SortableTable {
     }).join('');
   }
 
-  initEventListeners() {
-  }
+  initEventListeners() {}
 
   sort(fieldValue, orderValue) {
     const sortType = this.headerConfig.find(x => x.id === fieldValue).sortType;
@@ -86,7 +76,6 @@ export default class SortableTable {
     if (sortType === 'number') {
       this.data = this.sortNumbers(this.data, fieldValue, orderValue);
     }
-
     this.element.innerHTML = this.getTemplate();
   }
   sortStrings(arr, field, order) {
@@ -109,17 +98,14 @@ export default class SortableTable {
       return sortDirection * (a[field] - b[field]);
     });
   }
-
   get subElements() {
     const element = document.createElement("div");
     element.innerHTML = this.getBodyTemplate();
     return {body: element};
   }
-
   remove() {
     this.element.remove();
   }
-
   destroy() {
     this.remove();
     // NOTE: удаляем обработчики событий, если они есть

@@ -7,7 +7,6 @@ export default class NotificationMessage {
     this.render();
     this.initEventListeners();
   }
-
   getTemplate() {
     return `
         <div class="notification ${this.type}" style="--value:${this.duration / 1000}s">
@@ -23,9 +22,7 @@ export default class NotificationMessage {
   }
   render() {
     const oldNotification = document.querySelector('.notification');
-    if (oldNotification) {
-      oldNotification.remove();
-    }
+    if (oldNotification) { oldNotification.remove(); }
     const element = document.createElement("div"); // (*)
     element.innerHTML = this.getTemplate();
     this.element = element.firstElementChild;
