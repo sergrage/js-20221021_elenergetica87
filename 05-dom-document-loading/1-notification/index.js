@@ -6,6 +6,9 @@ export default class NotificationMessage {
     this.element = document.createElement("div");
     this.render();
     this.initEventListeners();
+
+    NotificationMessage.allInstances = [];
+    NotificationMessage.allInstances.push(this);
   }
   getTemplate() {
     return `
@@ -21,8 +24,11 @@ export default class NotificationMessage {
     `;
   }
   render() {
-    const oldNotification = document.querySelector('.notification');
-    if (oldNotification) { oldNotification.remove(); }
+    if (NotificationMessage.allInstances) {
+      NotificationMessage.allInstances.forEach(instances => instances.remove());
+    }
+    // const oldNotification = document.querySelector('.notification');
+    // if (oldNotification) { oldNotification.remove(); }
     const element = document.createElement("div"); // (*)
     element.innerHTML = this.getTemplate();
     this.element = element.firstElementChild;
