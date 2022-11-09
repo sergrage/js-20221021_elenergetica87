@@ -99,9 +99,20 @@ export default class SortableTable {
     });
   }
   get subElements() {
-    const element = document.createElement("div");
-    element.innerHTML = this.getBodyTemplate();
-    return {body: element};
+    const result = {};
+    const elements = this.element.querySelectorAll("[data-element]");
+
+    for (const subElement of elements) {
+      const name = subElement.dataset.element;
+      result[name] = subElement;
+    }
+
+    return result;
+    // const body = document.createElement("div");
+    // const header = document.createElement("div");
+    // body.innerHTML = this.getBodyTemplate();
+    // header.innerHTML = this.getHeaderTemplate();
+    // return {body: body, header: header};
   }
   remove() {
     this.element.remove();
