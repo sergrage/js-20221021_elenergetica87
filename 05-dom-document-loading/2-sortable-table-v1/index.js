@@ -108,11 +108,6 @@ export default class SortableTable {
     }
 
     return result;
-    // const body = document.createElement("div");
-    // const header = document.createElement("div");
-    // body.innerHTML = this.getBodyTemplate();
-    // header.innerHTML = this.getHeaderTemplate();
-    // return {body: body, header: header};
   }
   remove() {
     this.element.remove();
