@@ -99,9 +99,15 @@ export default class SortableTable {
     });
   }
   get subElements() {
-    const element = document.createElement("div");
-    element.innerHTML = this.getBodyTemplate();
-    return {body: element};
+    const result = {};
+    const elements = this.element.querySelectorAll("[data-element]");
+
+    for (const subElement of elements) {
+      const name = subElement.dataset.element;
+      result[name] = subElement;
+    }
+
+    return result;
   }
   remove() {
     this.element.remove();
