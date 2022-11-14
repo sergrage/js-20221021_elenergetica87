@@ -8,6 +8,7 @@ export default class ColumnChart {
     this.element.classList.add("column-chart_loading");
     const url = BACKEND_URL + '/' + this.url + `?from=${start}&to=${end}`;
     fetchJson(url).then(res => {
+      this.graph = [];
       this.data = this.graphLineToPercent(Object.values(res));
       this.createGraph();
       this.subElements.body.innerHTML = this.graph;
@@ -17,13 +18,17 @@ export default class ColumnChart {
   }
   constructor({
     url = 'api/dashboard',
+    range = {
+      from: new Date().toISOString().split('T')[0],
+      to: new Date(new Date().setMonth(new Date().getMonth() - 1)).toISOString().split('T')[0]
+    },
     data = [],
     label = "",
     link = "",
     value = 0,
     formatHeading = data => data,
   } = {}) {
-    this.range = {from: new Date().toISOString().split('T')[0], to: new Date().toISOString().split('T')[0]};
+    this.range = range;
     this.url = url;
     this.data = this.graphLineToPercent(data);
     this.label = label;
@@ -36,7 +41,6 @@ export default class ColumnChart {
     this.subElements = this.getSubElements();
 
     this.loadData(this.range.from, this.range.to);
-    // this.initEventListeners();
   }
 
   getTemplate() {
@@ -76,9 +80,7 @@ export default class ColumnChart {
   }
 
   update(start, end) {
-    let startFormat = start.toISOString().split('T')[0];
-    let endFormat = end.toISOString().split('T')[0];
-    this.loadData(startFormat, endFormat);
+    this.loadData(start.toISOString().split('T')[0], end.toISOString().split('T')[0]);
   }
 
   getSubElements() {
