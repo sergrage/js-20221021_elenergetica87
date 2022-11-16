@@ -28,8 +28,9 @@ class Tooltip {
     return `<div class="tooltip">${tooltip}</div>`;
   }
   moveTooltip = (event) => {
-    this.element.style.left = 10 + event.clientX + 'px';
-    this.element.style.top = 10 + event.clientY + 'px';
+    const offset = 10;
+    this.element.style.left = offset + event.clientX + 'px';
+    this.element.style.top = offset + event.clientY + 'px';
   }
   render(template) {
     const element = document.createElement("div"); // (*)
