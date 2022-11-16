@@ -7,6 +7,11 @@ export default class SortableTable {
     url = '',
     isSortLocally = false
   } = {}) {
+    this.loadKey = true
+    this._start = 0;
+    this._end = 30;
+    this._sort = 'title';
+    this._order = 'asc';
     this.isSortLocally = isSortLocally;
     this.headersConfig = headersConfig;
     this.url = new URL(url, BACKEND_URL);
@@ -20,10 +25,11 @@ export default class SortableTable {
     this.url.searchParams.set('_sort', _sort);
     this.url.searchParams.set('_order', _order);
     const url = this.url.href;
+    console.log(url)
     return await fetchJson(url);
   }
-  async reRenderBody(_start = 0, _end = 30, _sort = 'title', _order = 'asc') {
-    this.data = await this.loadData(_start, _end, _sort, _order);
+  async reRenderBody() {
+    this.data = await this.loadData(this._start, this._end, this._sort, this._order);
     if (!this.data) {
       this.sortableTable.classList.add('sortable-table_empty');
     } else {
@@ -102,6 +108,22 @@ export default class SortableTable {
   }
   initEventListeners() {
     this.subElements.header.addEventListener('pointerdown', this.sortClick);
+    window.addEventListener('scroll', this.infinityScroll);
+  }
+  infinityScroll = (event) => {
+    if (this.element.getBoundingClientRect().bottom < document.documentElement.clientHeight && this.loadKey) {
+      this._end = this._end + 30;
+      this.loadKey = false;
+      this.loadData(this._start, this._end, this._sort, this._order).then((res) => {
+        if (res) {
+          this.data = res;
+          this.subElements.body.innerHTML = this.getBodyTemplate();
+          this.loadKey = true;
+        } else {
+          this.sortableTable.classList.add('sortable-table_empty');
+        }
+      });
+    }
   }
   sortClick = (event) => {
     const headerItem = event.target.closest('[data-sortable="true"]');
@@ -109,18 +131,19 @@ export default class SortableTable {
       const { id } = headerItem.dataset;
       let { order } = headerItem.dataset;
       // TODO понять как надо разворачивать сортировку
-      order = (order === 'asc') ? 'desc' : 'asc';
+      this._sort = id;
+      this._order = (order === 'asc') ? 'desc' : 'asc';
       // const { order } = headerItem.dataset === 'asc' ? 'desc' : 'asc';
       if (this.isSortLocally) {
-        this.sortOnClient(id, order);
+        this.sortOnClient(this._sort, this._order);
       } else {
-        this.sortOnServer(id, order);
+        this.sortOnServer();
       }
       this.subElements.body.innerHTML = this.getBodyTemplate();
     }
   }
-  async sortOnServer (id, order) {
-    await this.reRenderBody(0, 30, id, order);
+  async sortOnServer () {
+    await this.reRenderBody();
   }
   sortOnClient(id, order) {
     const sortType = this.headersConfig.find(x => x.id === id).sortType;
