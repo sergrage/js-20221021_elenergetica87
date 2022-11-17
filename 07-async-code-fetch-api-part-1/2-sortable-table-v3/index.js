@@ -7,7 +7,7 @@ export default class SortableTable {
     url = '',
     isSortLocally = false
   } = {}) {
-    this.loadKey = true
+    this.loadKey = true;
     this._start = 0;
     this._end = 30;
     this._sort = 'title';
@@ -19,17 +19,15 @@ export default class SortableTable {
   }
 
   async loadData(_start, _end, _sort, _order) {
-    // https://course-js.javascript.ru/api/rest/products?_embed=subcategory.category&_sort=title&_order=asc&_start=0&_end=30
     this.url.searchParams.set('_start', _start);
     this.url.searchParams.set('_end', _end);
     this.url.searchParams.set('_sort', _sort);
     this.url.searchParams.set('_order', _order);
     const url = this.url.href;
-    console.log(url)
     return await fetchJson(url);
   }
-  async reRenderBody() {
-    this.data = await this.loadData(this._start, this._end, this._sort, this._order);
+  async reRenderBody(id, order) {
+    this.data = await this.loadData(this._start, this._end, id, order);
     if (!this.data) {
       this.sortableTable.classList.add('sortable-table_empty');
     } else {
@@ -43,8 +41,6 @@ export default class SortableTable {
     this.element = wrapper.firstElementChild;
     await this.reRenderBody();
     this.initEventListeners();
-    // this.sortableTable.classList.add('sortable-table_loading');
-    // this.sortableTable.classList.remove('sortable-table_loading');
   }
   getTemplate() {
     return `
@@ -133,17 +129,16 @@ export default class SortableTable {
       // TODO понять как надо разворачивать сортировку
       this._sort = id;
       this._order = (order === 'asc') ? 'desc' : 'asc';
-      // const { order } = headerItem.dataset === 'asc' ? 'desc' : 'asc';
       if (this.isSortLocally) {
         this.sortOnClient(this._sort, this._order);
       } else {
-        this.sortOnServer();
+        this.sortOnServer(this._sort, this._order);
       }
       this.subElements.body.innerHTML = this.getBodyTemplate();
     }
   }
-  async sortOnServer () {
-    await this.reRenderBody();
+  async sortOnServer (id, order) {
+    await this.reRenderBody(id, order);
   }
   sortOnClient(id, order) {
     const sortType = this.headersConfig.find(x => x.id === id).sortType;
