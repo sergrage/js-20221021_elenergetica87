@@ -6,7 +6,7 @@ export default class ColumnChart {
   subElements = {};
   loadData = (start, end) => {
     this.element.classList.add("column-chart_loading");
-    const url = BACKEND_URL + '/' + this.url + `?from=${start}&to=${end}`;
+    const url = this.url.href + `?from=${start}&to=${end}`;
     fetchJson(url).then(res => {
       this.graph = [];
       this.data = this.graphLineToPercent(Object.values(res));
@@ -14,10 +14,10 @@ export default class ColumnChart {
       this.subElements.body.innerHTML = this.graph;
       this.element.classList.remove("column-chart_loading");
       return res;
-    });
+    }).catch((error) => alert(error));
   }
   constructor({
-    url = 'api/dashboard',
+    url = 'api/dashboard/orders/',
     range = {
       from: new Date().toISOString().split('T')[0],
       to: new Date(new Date().setMonth(new Date().getMonth() - 1)).toISOString().split('T')[0]
@@ -29,7 +29,7 @@ export default class ColumnChart {
     formatHeading = data => data,
   } = {}) {
     this.range = range;
-    this.url = url;
+    this.url = new URL(url, BACKEND_URL);
     this.data = this.graphLineToPercent(data);
     this.label = label;
     this.link = `<a class="column-chart__link" href="${link}">View all</a>`;
@@ -93,13 +93,6 @@ export default class ColumnChart {
     return result;
   }
 
-
-
-  initEventListeners() {
-    // NOTE: в данном методе добавляем обработчики событий, если они есть
-    // const loadDataButton = document.getElementById('loadOrders');
-    // loadDataButton.addEventListener('click', this.onButtonClick);
-  }
   remove() {
     this.element.remove();
   }
