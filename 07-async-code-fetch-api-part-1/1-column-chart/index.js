@@ -4,17 +4,16 @@ const BACKEND_URL = 'https://course-js.javascript.ru';
 
 export default class ColumnChart {
   subElements = {};
-  loadData = (start, end) => {
+  loadData = async(start, end) => {
     this.element.classList.add("column-chart_loading");
     const url = this.url.href + `?from=${start}&to=${end}`;
-    fetchJson(url).then(res => {
-      this.graph = [];
-      this.data = this.graphLineToPercent(Object.values(res));
-      this.createGraph();
-      this.subElements.body.innerHTML = this.graph;
-      this.element.classList.remove("column-chart_loading");
-      return res;
-    }).catch((error) => alert(error));
+    let data = await fetchJson(url).catch((error) => console.log(error));
+    this.graph = [];
+    this.data = this.graphLineToPercent(Object.values(data));
+    this.createGraph();
+    this.subElements.body.innerHTML = this.graph;
+    this.element.classList.remove("column-chart_loading");
+    return data;
   }
   constructor({
     url = 'api/dashboard/orders/',
@@ -39,8 +38,6 @@ export default class ColumnChart {
     this.chartHeight = 50;
     this.render();
     this.subElements = this.getSubElements();
-
-    this.loadData(this.range.from, this.range.to);
   }
 
   getTemplate() {
@@ -58,10 +55,11 @@ export default class ColumnChart {
     </div>
     `;
   }
-  render() {
+  async render() {
     const element = document.createElement("div"); // (*)
     element.innerHTML = this.getTemplate();
     this.element = element.firstElementChild;
+    await this.loadData(this.range.from, this.range.to);
   }
   graphLineToPercent(data) {
     const maxValue = Math.max(...data);
@@ -80,7 +78,7 @@ export default class ColumnChart {
   }
 
   update(start, end) {
-    this.loadData(start.toISOString().split('T')[0], end.toISOString().split('T')[0]);
+    return this.loadData(start.toISOString().split('T')[0], end.toISOString().split('T')[0]);
   }
 
   getSubElements() {
