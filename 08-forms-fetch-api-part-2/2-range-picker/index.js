@@ -85,11 +85,20 @@ export default class RangePicker {
     date.setUTCDate(0);
     const daysNumber = this.getDaysNumberInMonth(date);
     const dayOfWeekDigit = date.getDay() === 0 ? 7 : date.getDay();
-
+    console.log(date);
     let result =
-    `<button type="button" class="rangepicker__cell" data-value="${new Date(date)}" style="--start-from: ${dayOfWeekDigit}">1</button>`;
+    `<button type="button"
+             class="rangepicker__cell
+                    ${this.datesIsEqual(this.from, date) ? 'rangepicker__selected-from' : ''}
+                    ${this.dateBetween(date, this.from, this.to) ? 'rangepicker__selected-between' : ''}""
+             data-value="${new Date(date)}"
+             style="--start-from: ${dayOfWeekDigit}">1</button>`;
     for (let i = 1; i < daysNumber; i++) {
-      result += `<button type="button" class="rangepicker__cell" data-value="${new Date(date.setUTCDate(i))}">${i + 1} ${this.datesIsEqual(new Date(date.setUTCDate(i)), this.from) }</button>`;
+      result += `<button type="button"
+                         class="rangepicker__cell
+                                ${this.datesIsEqual(this.from, this.addDays(date, i)) ? 'rangepicker__selected-from' : ''}
+                                ${this.dateBetween(this.addDays(date, i), this.from, this.to) ? 'rangepicker__selected-between' : ''}"
+                         data-value="${this.addDays(date, i)}">${i + 1}</button>`;
     }
     return result;
   }
@@ -151,7 +160,12 @@ export default class RangePicker {
       date1.getFullYear() === date2.getFullYear();
   }
   dateBetween(date, start, end) {
-    return (date > start && date < end);
+    return (date > start && date <= end);
+  }
+  addDays(date, days) {
+    const result = new Date(date);
+    result.setDate(result.getDate() + days);
+    return result;
   }
   remove() {
     this.element.remove();
