@@ -1,8 +1,9 @@
 export default class RangePicker {
   onInputClick = () => {
+    const copiedDate = new Date(this.dateMonth.getTime());
     const rangePicker = document.querySelector('.rangepicker');
     if (!rangePicker.classList.contains('rangepicker_open')) {
-      this.renderCalendar(this.dateMonth);
+      this.renderCalendar(copiedDate);
     }
     rangePicker.classList.toggle('rangepicker_open');
   }
@@ -15,13 +16,19 @@ export default class RangePicker {
   }
 
   prevMonthClick = (event) => {
-    const date = new Date(this.dateMonth.setMonth(this.dateMonth.getMonth() - 1));
-    this.renderCalendar(date);
+    const copiedDate = new Date(this.dateMonth.getTime());
+    copiedDate.setMonth(copiedDate.getMonth() - 1);
+
+    this.renderCalendar(copiedDate);
+    this.dateMonth.setMonth(this.dateMonth.getMonth() - 1);
   }
 
   nextMonthClick = (event) => {
-    const date = new Date(this.dateMonth.setMonth(this.dateMonth.getMonth() + 1));
-    this.renderCalendar(date);
+    const copiedDate = new Date(this.dateMonth.getTime());
+    copiedDate.setMonth(copiedDate.getMonth() + 1);
+
+    this.renderCalendar(copiedDate);
+    this.dateMonth.setMonth(this.dateMonth.getMonth() + 1);
   }
 
   constructor ({
@@ -49,6 +56,7 @@ export default class RangePicker {
     const nextMonth = selector.querySelector('.rangepicker__selector-control-right');
     previousMonth.addEventListener('click', () => this.prevMonthClick());
     nextMonth.addEventListener('click', () => this.nextMonthClick());
+
   }
   getTemplate() {
     return `
@@ -65,7 +73,7 @@ export default class RangePicker {
     return `
       ${this.getArrowsControl()}
       <div class="rangepicker__calendar">
-        ${this.getMonthIndicator(date)}
+        ${this.getMonthIndicator(new Date(date.setMonth(date.getMonth())))}
         ${this.getDaysOfWeek()}
         <div class="rangepicker__date-grid">
           ${this.getDateGrid(date)}
@@ -84,12 +92,12 @@ export default class RangePicker {
     date.setUTCDate(0);
     const daysNumber = this.getDaysNumberInMonth(date);
     const dayOfWeekDigit = date.getDay() === 0 ? 7 : date.getDay();
-    console.log(date);
     let result =
     `<button type="button"
              class="rangepicker__cell
                     ${this.datesIsEqual(this.from, date) ? 'rangepicker__selected-from' : ''}
-                    ${this.dateBetween(date, this.from, this.to) ? 'rangepicker__selected-between' : ''}""
+                    ${this.datesIsEqual(this.to, date) ? 'rangepicker__selected-to' : ''}
+                    ${this.dateBetween(date, this.from, this.to) ? 'rangepicker__selected-between' : ''}"
              data-value="${new Date(date)}"
              style="--start-from: ${dayOfWeekDigit}">1</button>`;
     for (let i = 1; i < daysNumber; i++) {
@@ -97,6 +105,7 @@ export default class RangePicker {
       `<button type="button"
                class="rangepicker__cell
                       ${this.datesIsEqual(this.from, this.addDays(date, i)) ? 'rangepicker__selected-from' : ''}
+                      ${this.datesIsEqual(this.to, this.addDays(date, i)) ? 'rangepicker__selected-to' : ''}
                       ${this.dateBetween(this.addDays(date, i), this.from, this.to) ? 'rangepicker__selected-between' : ''}"
                data-value="${this.addDays(date, i)}">${i + 1}</button>`;
     }
