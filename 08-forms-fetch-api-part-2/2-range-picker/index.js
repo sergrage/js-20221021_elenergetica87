@@ -1,5 +1,4 @@
 export default class RangePicker {
-
   onInputClick = () => {
     const rangePicker = document.querySelector('.rangepicker');
     if (!rangePicker.classList.contains('rangepicker_open')) {
