@@ -93,11 +93,12 @@ export default class RangePicker {
              data-value="${new Date(date)}"
              style="--start-from: ${dayOfWeekDigit}">1</button>`;
     for (let i = 1; i < daysNumber; i++) {
-      result += `<button type="button"
-                         class="rangepicker__cell
-                                ${this.datesIsEqual(this.from, this.addDays(date, i)) ? 'rangepicker__selected-from' : ''}
-                                ${this.dateBetween(this.addDays(date, i), this.from, this.to) ? 'rangepicker__selected-between' : ''}"
-                         data-value="${this.addDays(date, i)}">${i + 1}</button>`;
+      result +=
+      `<button type="button"
+               class="rangepicker__cell
+                      ${this.datesIsEqual(this.from, this.addDays(date, i)) ? 'rangepicker__selected-from' : ''}
+                      ${this.dateBetween(this.addDays(date, i), this.from, this.to) ? 'rangepicker__selected-between' : ''}"
+               data-value="${this.addDays(date, i)}">${i + 1}</button>`;
     }
     return result;
   }
