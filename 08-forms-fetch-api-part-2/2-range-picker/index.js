@@ -14,7 +14,21 @@ export default class RangePicker {
       rangePicker.classList.remove('rangepicker_open');
     }
   }
-
+  onRangePickerClick = (event) => {
+    if (event.target.classList.contains('rangepicker__cell')) {
+      if (this.from < new Date(event.target.getAttribute('data-value'))) {
+        this.to = new Date(event.target.getAttribute('data-value'));
+        console.log('Ne Ravn');
+      } else {
+        console.log('Ravn');
+        this.from = new Date(event.target.getAttribute('data-value'));
+        this.to = new Date(event.target.getAttribute('data-value'));
+      }
+      this.dateMonth = new Date(this.from.getTime());
+      const copiedDate = new Date(this.dateMonth.getTime());
+      this.renderCalendar(copiedDate);
+    }
+  }
   prevMonthClick = (event) => {
     const copiedDate = new Date(this.dateMonth.getTime());
     copiedDate.setMonth(copiedDate.getMonth() - 1);
@@ -22,7 +36,6 @@ export default class RangePicker {
     this.renderCalendar(copiedDate);
     this.dateMonth.setMonth(this.dateMonth.getMonth() - 1);
   }
-
   nextMonthClick = (event) => {
     const copiedDate = new Date(this.dateMonth.getTime());
     copiedDate.setMonth(copiedDate.getMonth() + 1);
@@ -141,6 +154,8 @@ export default class RangePicker {
   initEventListeners() {
     this.subElements.input.addEventListener('click', this.onInputClick);
     document.addEventListener('click', this.insideClick, true);
+    document.addEventListener('click', this.onRangePickerClick);
+
   }
   get subElements() {
     const result = {};
