@@ -1,8 +1,9 @@
 export default class RangePicker {
   onInputClick = () => {
+    const copiedDate = new Date(this.dateMonth.getTime());
     const rangePicker = document.querySelector('.rangepicker');
     if (!rangePicker.classList.contains('rangepicker_open')) {
-      this.renderCalendar(this.dateMonth);
+      this.renderCalendar(copiedDate);
     }
     rangePicker.classList.toggle('rangepicker_open');
   }
@@ -13,15 +14,34 @@ export default class RangePicker {
       rangePicker.classList.remove('rangepicker_open');
     }
   }
-
-  prevMonthClick = (event) => {
-    const date = new Date(this.dateMonth.setMonth(this.dateMonth.getMonth() - 1));
-    this.renderCalendar(date);
+  onRangePickerClick = (event) => {
+    if (event.target.classList.contains('rangepicker__cell')) {
+      if (this.from < new Date(event.target.getAttribute('data-value'))) {
+        this.to = new Date(event.target.getAttribute('data-value'));
+        console.log('Ne Ravn');
+      } else {
+        console.log('Ravn');
+        this.from = new Date(event.target.getAttribute('data-value'));
+        this.to = new Date(event.target.getAttribute('data-value'));
+      }
+      this.dateMonth = new Date(this.from.getTime());
+      const copiedDate = new Date(this.dateMonth.getTime());
+      this.renderCalendar(copiedDate);
+    }
   }
+  prevMonthClick = (event) => {
+    const copiedDate = new Date(this.dateMonth.getTime());
+    copiedDate.setMonth(copiedDate.getMonth() - 1);
 
+    this.renderCalendar(copiedDate);
+    this.dateMonth.setMonth(this.dateMonth.getMonth() - 1);
+  }
   nextMonthClick = (event) => {
-    const date = new Date(this.dateMonth.setMonth(this.dateMonth.getMonth() + 1));
-    this.renderCalendar(date);
+    const copiedDate = new Date(this.dateMonth.getTime());
+    copiedDate.setMonth(copiedDate.getMonth() + 1);
+
+    this.renderCalendar(copiedDate);
+    this.dateMonth.setMonth(this.dateMonth.getMonth() + 1);
   }
 
   constructor ({
@@ -49,6 +69,7 @@ export default class RangePicker {
     const nextMonth = selector.querySelector('.rangepicker__selector-control-right');
     previousMonth.addEventListener('click', () => this.prevMonthClick());
     nextMonth.addEventListener('click', () => this.nextMonthClick());
+
   }
   getTemplate() {
     return `
@@ -65,7 +86,7 @@ export default class RangePicker {
     return `
       ${this.getArrowsControl()}
       <div class="rangepicker__calendar">
-        ${this.getMonthIndicator(date)}
+        ${this.getMonthIndicator(new Date(date.setMonth(date.getMonth())))}
         ${this.getDaysOfWeek()}
         <div class="rangepicker__date-grid">
           ${this.getDateGrid(date)}
@@ -84,21 +105,16 @@ export default class RangePicker {
     date.setUTCDate(0);
     const daysNumber = this.getDaysNumberInMonth(date);
     const dayOfWeekDigit = date.getDay() === 0 ? 7 : date.getDay();
-    console.log(date);
-    let result =
-    `<button type="button"
-             class="rangepicker__cell
-                    ${this.datesIsEqual(this.from, date) ? 'rangepicker__selected-from' : ''}
-                    ${this.dateBetween(date, this.from, this.to) ? 'rangepicker__selected-between' : ''}""
-             data-value="${new Date(date)}"
-             style="--start-from: ${dayOfWeekDigit}">1</button>`;
-    for (let i = 1; i < daysNumber; i++) {
+    let result = '';
+    for (let i = 0; i < daysNumber; i++) {
       result +=
       `<button type="button"
                class="rangepicker__cell
                       ${this.datesIsEqual(this.from, this.addDays(date, i)) ? 'rangepicker__selected-from' : ''}
+                      ${this.datesIsEqual(this.to, this.addDays(date, i)) ? 'rangepicker__selected-to' : ''}
                       ${this.dateBetween(this.addDays(date, i), this.from, this.to) ? 'rangepicker__selected-between' : ''}"
-               data-value="${this.addDays(date, i)}">${i + 1}</button>`;
+               data-value="${this.addDays(date, i)}"
+               style="${i === 0 ? '--start-from:' + dayOfWeekDigit : ''}">${i + 1}</button>`;
     }
     return result;
   }
@@ -138,6 +154,8 @@ export default class RangePicker {
   initEventListeners() {
     this.subElements.input.addEventListener('click', this.onInputClick);
     document.addEventListener('click', this.insideClick, true);
+    document.addEventListener('click', this.onRangePickerClick);
+
   }
   get subElements() {
     const result = {};
@@ -160,7 +178,7 @@ export default class RangePicker {
       date1.getFullYear() === date2.getFullYear();
   }
   dateBetween(date, start, end) {
-    return (date > start && date <= end);
+    return (date > start && date < end);
   }
   addDays(date, days) {
     const result = new Date(date);
