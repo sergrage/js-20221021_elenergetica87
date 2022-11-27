@@ -202,7 +202,7 @@ export default class SortableTable {
 
   initEventListeners() {
     this.subElements.header.addEventListener('pointerdown', this.onSortClick);
-    document.addEventListener('scroll', this.onWindowScroll);
+    // document.addEventListener('scroll', this.onWindowScroll);
   }
 
   sortOnClient(id, order) {
